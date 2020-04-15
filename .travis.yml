@@ -7,9 +7,9 @@ services:
 
 env:
   matrix:
-    - DISTRO=centos8 DOCKERHUB=true
-    - DISTRO=ubuntu18 DOCKERHUB=true
-    - DISTRO=fedora30 DOCKERHUB=true
+    - DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
+    - DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
 
 script:
   - ls
