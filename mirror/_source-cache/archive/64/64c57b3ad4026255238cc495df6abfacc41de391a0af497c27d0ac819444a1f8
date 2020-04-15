@@ -1,0 +1,123 @@
+From 53de184a162b8a7edff48fed01a15980664e15b1 Mon Sep 17 00:00:00 2001
+From: Anara Kozhokanova <akozhoka@vols.utk.edu>
+Date: Tue, 5 Jun 2018 11:33:44 -0400
+Subject: [PATCH] Update libpfm4
+
+Current with
+------------
+commit 29f626744df184913a200532408e205e2b0ec2ec
+Author: William Cohen <wcohen@redhat.com>
+Date:   Mon Jun 4 20:15:08 2018 -0700
+
+    Fix error: '%s' directive output may be truncated
+
+    Newer versions of gcc are more strict with regards to return
+    values of snprintf(), so check the values.
+
+    Signed-off-by: William Cohen <wcohen@redhat.com>
+---
+ src/libpfm4/lib/pfmlib_perf_event_pmu.c | 18 +++++++++++++++---
+ src/libpfm4/perf_examples/syst_count.c  | 11 +++++++++--
+ src/libpfm4/perf_examples/syst_smpl.c   | 11 +++++++++--
+ 3 files changed, 33 insertions(+), 7 deletions(-)
+
+diff --git a/src/libpfm4/lib/pfmlib_perf_event_pmu.c b/src/libpfm4/lib/pfmlib_perf_event_pmu.c
+index 86ff824..6f890a9 100644
+--- a/src/libpfm4/lib/pfmlib_perf_event_pmu.c
++++ b/src/libpfm4/lib/pfmlib_perf_event_pmu.c
+@@ -328,6 +328,7 @@ gen_tracepoint_table(void)
+ 	int reuse_event = 0;
+ 	int numasks;
+ 	char *tracepoint_name;
++	int retlen;
+ 
+ 	err = get_debugfs_mnt();
+ 	if (err == -1)
+@@ -351,7 +352,10 @@ gen_tracepoint_table(void)
+ 		if (!strcmp(d1->d_name, ".."))
+ 			continue;
+ 
+-		snprintf(d2path, MAXPATHLEN, "%s/%s", debugfs_mnt, d1->d_name);
++		retlen = snprintf(d2path, MAXPATHLEN, "%s/%s", debugfs_mnt, d1->d_name);
++		/* ensure generated d2path string is valid */
++		if (retlen <= 0 || MAXPATHLEN <= retlen)
++			continue;
+ 
+ 		/* fails if d2path is not a directory */
+ 		dir2 = opendir(d2path);
+@@ -398,10 +402,18 @@ gen_tracepoint_table(void)
+ 				continue;
+ 
+ #ifdef HAS_OPENAT
+-                        snprintf(idpath, MAXPATHLEN, "%s/id", d2->d_name);
++			retlen = snprintf(idpath, MAXPATHLEN, "%s/id", d2->d_name);
++			/* ensure generated d2path string is valid */
++			if (retlen <= 0 || MAXPATHLEN <= retlen)
++			continue;
++
+                         fd = openat(dir2_fd, idpath, O_RDONLY);
+ #else
+-                        snprintf(idpath, MAXPATHLEN, "%s/%s/id", d2path, d2->d_name);
++                        retlen = snprintf(idpath, MAXPATHLEN, "%s/%s/id", d2path, d2->d_name);
++			/* ensure generated d2path string is valid */
++			if (retlen <= 0 || MAXPATHLEN <= retlen)
++			continue;
++
+                         fd = open(idpath, O_RDONLY);
+ #endif
+ 			if (fd == -1)
+diff --git a/src/libpfm4/perf_examples/syst_count.c b/src/libpfm4/perf_examples/syst_count.c
+index e0fa42e..31666e1 100644
+--- a/src/libpfm4/perf_examples/syst_count.c
++++ b/src/libpfm4/perf_examples/syst_count.c
+@@ -112,12 +112,19 @@ open_cgroup(char *name)
+ {
+         char path[MAX_PATH+1];
+         char mnt[MAX_PATH+1];
+-        int cfd;
++        int cfd = -1;
++	int retlen;
+ 
+         if (cgroupfs_find_mountpoint(mnt, MAX_PATH+1))
+                 errx(1, "cannot find cgroup fs mount point");
+ 
+-        snprintf(path, MAX_PATH, "%s/%s", mnt, name);
++	retlen = snprintf(path, MAX_PATH, "%s/%s", mnt, name);
++
++	/* ensure generated d2path string is valid */
++	if (retlen <= 0 || MAX_PATH <= retlen) {
++		warn("Unable to generate path name %s/%s\n", mnt, name);
++		return cfd;
++	}
+ 
+         cfd = open(path, O_RDONLY);
+         if (cfd == -1)
+diff --git a/src/libpfm4/perf_examples/syst_smpl.c b/src/libpfm4/perf_examples/syst_smpl.c
+index 6b70e0e..04580fd 100755
+--- a/src/libpfm4/perf_examples/syst_smpl.c
++++ b/src/libpfm4/perf_examples/syst_smpl.c
+@@ -278,12 +278,19 @@ open_cgroup(char *name)
+ {
+         char path[MAX_PATH+1];
+         char mnt[MAX_PATH+1];
+-        int cfd;
++        int cfd = -1;
++	int retlen;
+ 
+         if (cgroupfs_find_mountpoint(mnt, MAX_PATH+1))
+                 errx(1, "cannot find cgroup fs mount point");
+ 
+-        snprintf(path, MAX_PATH, "%s/%s", mnt, name);
++	retlen = snprintf(path, MAX_PATH, "%s/%s", mnt, name);
++
++	/* ensure generated d2path string is valid */
++	if (retlen <= 0 || MAX_PATH <= retlen) {
++		warn("Unable to generate path name %s/%s\n", mnt, name);
++		return cfd;
++	}
+ 
+         cfd = open(path, O_RDONLY);
+         if (cfd == -1)
+-- 
+2.10.5
+
