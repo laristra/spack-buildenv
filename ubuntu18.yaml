@@ -1,0 +1,28 @@
+packages:
+  perl:
+    paths:
+      perl@5.26.1: /usr
+  python:
+    paths:
+      python@3.6.9: /usr
+      python@2.7.17: /usr
+  numactl:
+    paths:
+      numactl@system: /usr
+  automake:
+    paths:
+      automake@1.15.1: /usr
+  autoconf:
+    paths:
+      autoconf@2.69: /usr
+  git:
+    paths:
+        git@2.17.1: /usr
+  cmake:
+    version: [3.16.5]
+  boost:
+    version: [1.70.0]
+  mpich:
+    version: [3.2.1]
+  openmpi:
+    version: [3.1.4]

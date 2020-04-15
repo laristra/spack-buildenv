@@ -1,0 +1,49 @@
+FROM ubuntu:18.04
+
+SHELL ["/bin/bash", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    HOME=/home/flecsi \
+    BASH_ENV=~/.bashrc
+
+RUN apt-get -q update -y && \
+    apt-get -qq install -y sudo automake make cmake git curl wget tar xz-utils bzip2 ca-certificates environment-modules clang-7 libclang-7-dev clang-format-7 g++ gfortran patch ccache python-pip python3-pip nano vim gdb unzip gcovr lcov doxygen pandoc libcereal-dev liblapacke-dev libscotch-dev texlive-font-utils texlive-latex-base texlive-fonts-recommended texlive-latex-recommended && \
+    rm -rf /var/cache/apt && apt-get clean all
+
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-7 100 && \
+    update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-7 100 && \
+    update-alternatives --install /usr/bin/tclsh tclsh /usr/bin/tclsh8.6 100
+
+RUN wget -O /usr/bin/doxy-coverage https://raw.githubusercontent.com/alobbs/doxy-coverage/master/doxy-coverage.py && \
+    chmod +x /usr/bin/doxy-coverage
+
+RUN groupadd -r flecsi && \
+    useradd -r -m -g flecsi -G sudo flecsi && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER flecsi
+WORKDIR $HOME
+
+ENV PATH=/home/flecsi/.local/bin:/usr/lib/ccache:$HOME/spack/bin:${PATH} \
+    PYTHONPATH=/usr/local/lib/python2.7/site-packages${PYTHONPATH:+:}${PYTHONPATH}
+
+RUN pip3 install --user codecov coverxygen gcovr Sphinx recommonmark sphinx_rtd_theme breathe && \
+    gcc --version && clang --version && perl --version && cmake --version && \
+    add.modules || /bin/true
+
+RUN git clone https://github.com/spack/spack.git && \
+    cd spack && git checkout 0ac77b815fab9d2fd81704ea5f1b16bd7f837e0a && \
+    spack compiler find && \
+    mv ~/.spack/linux/compilers.yaml $HOME/spack/etc/spack/ && \
+    cat $HOME/spack/etc/spack/compilers.yaml
+
+COPY packages.yaml $HOME/spack/etc/spack/
+COPY mirrors.yaml $HOME/spack/etc/spack/
+COPY mirror/ $HOME/mirror
+
+RUN spack install -j 2 --show-log-on-error cmake && \
+    spack clean --all
+
+COPY entrypoint.sh /home/flecsi/.local/bin/
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["/bin/bash"]

@@ -1,0 +1,45 @@
+FROM centos:8
+
+SHELL ["/bin/bash", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    HOME=/home/flecsi \
+    BASH_ENV=~/.bashrc
+
+RUN yum update -y && \
+    yum install -y sudo automake make cmake git curl wget tar xz bzip2 ca-certificates environment-modules clang-devel gcc-c++ gcc-gfortran patch python2 python3 nano vim gdb unzip lapack texlive-epstopdf-bin texlive-latex-bin-bin texlive-collection-fontsrecommended texlive-fancyhdr texlive-booktabs && \
+    rm -rf /var/cache/yum && yum clean all
+
+RUN wget -O /usr/bin/doxy-coverage https://raw.githubusercontent.com/alobbs/doxy-coverage/master/doxy-coverage.py && \
+    chmod +x /usr/bin/doxy-coverage && \
+    sed -i '1s/python/&2/' /usr/bin/doxy-coverage
+
+RUN groupadd -r flecsi && \
+    useradd -r -m -g flecsi -G wheel flecsi && \
+    echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER flecsi
+WORKDIR $HOME
+
+ENV PATH=/home/flecsi/.local/bin:/usr/lib64/ccache:$HOME/spack/bin:${PATH} \
+    PYTHONPATH=/usr/local/lib/python2.7/site-packages${PYTHONPATH:+:}${PYTHONPATH}
+
+RUN pip3 install --user codecov coverxygen gcovr Sphinx recommonmark sphinx_rtd_theme breathe && \
+    gcc --version && clang --version && perl --version && cmake --version
+
+RUN git clone https://github.com/spack/spack.git && \
+    cd spack && git checkout 0ac77b815fab9d2fd81704ea5f1b16bd7f837e0a && \
+    spack compiler find && \
+    mv ~/.spack/linux/compilers.yaml $HOME/spack/etc/spack/ && \
+    cat $HOME/spack/etc/spack/compilers.yaml
+
+COPY packages.yaml $HOME/spack/etc/spack/
+COPY mirrors.yaml $HOME/spack/etc/spack/
+COPY mirror/ $HOME/mirror
+
+RUN spack install -j 2 --show-log-on-error cmake && \
+    spack clean --all
+
+COPY entrypoint.sh /home/flecsi/.local/bin/
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["/bin/bash"]
