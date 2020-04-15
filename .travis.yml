@@ -1,0 +1,34 @@
+language: c 
+
+sudo: required
+
+services:
+ - docker
+
+env:
+  matrix:
+    - DISTRO=centos8 DOCKERHUB=true
+    - DISTRO=ubuntu18 DOCKERHUB=true
+    - DISTRO=fedora30 DOCKERHUB=true
+
+script:
+  - ls
+  - mkdir ${HOME}/docker
+  - cp -v ${DISTRO} ${HOME}/docker/Dockerfile
+  - cp -v ${DISTRO}.yaml ${HOME}/docker/packages.yaml
+  - cp -v mirrors.yaml ${HOME}/docker/
+  - cp -v -R mirror ${HOME}/docker/
+  - cp -v entrypoint.sh ${HOME}/docker/
+  - if [[ ${TRAVIS_BRANCH} != master ]]; then TAG="${TAG}_${TRAVIS_BRANCH//[^a-zA-Z0-9]/_}"; fi
+  - travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/
+
+after_success:
+  - shopt -s extglob && [[ ${TRAVIS_BRANCH} = @(master) ]] && DEPLOY=yes
+  - if [[ ${DOCKERHUB} = true && ${DOCKER_USERNAME} && ${DOCKER_PASSWORD} && ${TRAVIS_PULL_REQUEST} == false && ${DEPLOY} ]]; then
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker push "${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}";
+   fi
+
+branches:
+  only:
+  - master
