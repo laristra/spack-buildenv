@@ -41,7 +41,8 @@ COPY packages.yaml $HOME/spack/etc/spack/
 COPY mirrors.yaml $HOME/spack/etc/spack/
 COPY mirror/ $HOME/mirror
 
-RUN spack install -j 2 --show-log-on-error cmake && \
+RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
+RUN spack install --show-log-on-error cmake && \
     spack clean --all
 
 COPY entrypoint.sh /home/flecsi/.local/bin/
