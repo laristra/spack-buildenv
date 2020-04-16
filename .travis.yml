@@ -20,7 +20,11 @@ script:
   - cp -v -R mirror ${HOME}/docker/
   - cp -v entrypoint.sh ${HOME}/docker/
   - if [[ ${TRAVIS_BRANCH} != master ]]; then TAG="${TAG}_${TRAVIS_BRANCH//[^a-zA-Z0-9]/_}"; fi
-  - travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/
+  - travis_wait 50 docker build --target spack_cmake -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/
+  - travis_wait 50 docker build --target spack_mpi -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/
+  - travis_wait 50 docker build --target spack_boost -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/
+  - travis_wait 50 docker build --target spack_caliper -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/
+  - travis_wait 50 docker build --target spack_misc -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/
 
 after_success:
   - shopt -s extglob && [[ ${TRAVIS_BRANCH} = @(master) ]] && DEPLOY=yes
