@@ -21,35 +21,25 @@ jobs:
   fast_finish: true
   include:
     - stage: cmake
-      env:
-        matrix:
-          - DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: mpi
-      env:
-        matrix:
-          - DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: boost
-      env:
-        matrix:
-          - DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: caliper
-      env:
-        matrix:
-          - DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: misc
-      env:
-        matrix:
-          - DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
-          - DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
 
 script:
   - ls
