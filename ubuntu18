@@ -42,9 +42,8 @@ COPY mirrors.yaml $HOME/spack/etc/spack/
 COPY mirror/ $HOME/mirror
 
 RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
-RUN spack install --show-log-on-error mpich && \
-    spack install --show-log-on-error openmpi && \
-    spack install --show-log-on-error cmake && \
+RUN spack install --show-log-on-error caliper && \
+    spack install --show-log-on-error boost && \
     spack clean --all
 
 COPY entrypoint.sh /home/flecsi/.local/bin/
