@@ -21,23 +21,23 @@ jobs:
   fast_finish: true
   include:
     - stage: cmake
-    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: mpi
-    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: boost
-    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: caliper
-    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
     - stage: misc
-    - env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
 
