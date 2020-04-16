@@ -44,17 +44,17 @@ COPY mirror/ $HOME/mirror
 RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
 RUN spack install --show-log-on-error cmake
 
-FROM spack_cmake AS spack_mpi
+FROM laristra/spack-base:ubuntu18_tmp AS spack_mpi
 RUN spack install --show-log-on-error mpich && \
     spack install --show-log-on-error openmpi
 
-FROM spack_mpi AS spack_boost
+FROM laristra/spack-base:ubuntu18_tmp AS spack_boost
 RUN spack install --show-log-on-error boost
 
-FROM spack_boost AS spack_caliper
+FROM laristra/spack-base:ubuntu18_tmp AS spack_caliper
 RUN spack install --show-log-on-error caliper
 
-FROM spack_caliper AS spack_misc
+FROM laristra/spack-base:ubuntu18_tmp AS spack_misc
 RUN spack install --show-log-on-error hdf5 && \
     spack install --show-log-on-error metis && \
     spack install --show-log-on-error parmetis
