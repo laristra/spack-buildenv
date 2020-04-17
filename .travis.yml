@@ -12,7 +12,8 @@ branches:
 
 stages:
   - name: cmake
-  - name: mpi
+  - name: mpich
+  - name: openmpi
   - name: boost
   - name: caliper
   - name: misc
@@ -24,7 +25,11 @@ jobs:
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-    - stage: mpi
+    - stage: mpich
+      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
+    - stage: openmpi
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
@@ -47,14 +52,17 @@ script:
   - mkdir ${HOME}/docker
   - cp -v ${DISTRO} ${HOME}/docker/Dockerfile
   - cp -v ${DISTRO}.yaml ${HOME}/docker/packages.yaml
+  - cp -v mirrors.yaml ${HOME}/docker/;
+  - cp -v -R mirror ${HOME}/docker/;
+  - cp -v entrypoint.sh ${HOME}/docker/;
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = cmake ]]; then
-      cp -v mirrors.yaml ${HOME}/docker/;
-      cp -v -R mirror ${HOME}/docker/;
-      cp -v entrypoint.sh ${HOME}/docker/;
       travis_wait 50 docker build --target spack_cmake -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
-  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpi ]]; then
-      travis_wait 50 docker build --target spack_mpi -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
+  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpich ]]; then
+      travis_wait 50 docker build --target spack_mpich -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
+    fi
+  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = openmpi ]]; then
+      travis_wait 50 docker build --target spack_openmpi -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = boost ]]; then
       travis_wait 50 docker build --target spack_boost -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;

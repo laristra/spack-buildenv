@@ -41,9 +41,12 @@ RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
 RUN spack install --show-log-on-error cmake && \
     spack clean --all
 
-FROM laristra/spack-base:centos8_tmp AS spack_mpi
+FROM laristra/spack-base:centos8_tmp AS spack_mpich
 RUN spack install --show-log-on-error mpich && \
-    spack install --show-log-on-error openmpi && \
+    spack clean --all
+
+FROM laristra/spack-base:centos8_tmp AS spack_openmpi
+RUN spack install --show-log-on-error openmpi && \
     spack clean --all
 
 FROM laristra/spack-base:centos8_tmp AS spack_boost
