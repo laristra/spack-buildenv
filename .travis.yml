@@ -12,8 +12,7 @@ branches:
 
 stages:
   - name: cmake
-  - name: mpich
-  - name: openmpi
+  - name: mpi
   - name: boost
   - name: caliper
   - name: misc
@@ -25,11 +24,7 @@ jobs:
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-    - stage: mpich
-      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
-    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
-    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-    - stage: openmpi
+    - stage: mpi
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
@@ -48,30 +43,28 @@ jobs:
 
 script:
   - if [[ ${TRAVIS_BRANCH} != master ]]; then TAG="${TAG}_${TRAVIS_BRANCH//[^a-zA-Z0-9]/_}"; fi
-  - ls
+  - ls ${DISTRO}
   - mkdir ${HOME}/docker
-  - cp -v ${DISTRO} ${HOME}/docker/Dockerfile
-  - cp -v ${DISTRO}.yaml ${HOME}/docker/packages.yaml
-  - cp -v mirrors.yaml ${HOME}/docker/;
-  - cp -v -R mirror ${HOME}/docker/;
-  - cp -v entrypoint.sh ${HOME}/docker/;
+  - cp -v ${DISTRO}/${TRAVIS_BUILD_STAGE_NAME} ${HOME}/docker/Dockerfile
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = cmake ]]; then
-      travis_wait 50 docker build --target spack_cmake -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
+      cp -v ${DISTRO}/packages.yaml ${HOME}/docker/
+      cd config;
+      cp -v mirrors.yaml ${HOME}/docker/;
+      cp -v -R mirror ${HOME}/docker/;
+      cp -v entrypoint.sh ${HOME}/docker/;
+      travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
-  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpich ]]; then
-      travis_wait 50 docker build --target spack_mpich -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
-    fi
-  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = openmpi ]]; then
-      travis_wait 50 docker build --target spack_openmpi -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
+  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpi ]]; then
+      travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = boost ]]; then
-      travis_wait 50 docker build --target spack_boost -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
+      travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = caliper ]]; then
-      travis_wait 50 docker build --target spack_caliper -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
+      travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = misc ]]; then
-      travis_wait 50 docker build --target spack_misc -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/;
+      travis_wait 50 docker build --squash -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/;
     fi
 
 after_success:

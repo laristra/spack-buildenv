@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 AS spack_cmake
+FROM ubuntu:18.04
 
 SHELL ["/bin/bash", "-c"]
 
@@ -43,28 +43,6 @@ COPY mirror/ $HOME/mirror
 
 RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
 RUN spack install --show-log-on-error cmake && \
-    spack clean --all
-
-FROM laristra/spack-base:ubuntu18_tmp AS spack_mpich
-RUN spack install --show-log-on-error mpich && \
-    spack clean --all
-
-FROM laristra/spack-base:ubuntu18_tmp AS spack_openmpi
-RUN spack install --show-log-on-error openmpi && \
-    spack clean --all
-
-FROM laristra/spack-base:ubuntu18_tmp AS spack_boost
-RUN spack install --show-log-on-error boost && \
-    spack clean --all
-
-FROM laristra/spack-base:ubuntu18_tmp AS spack_caliper
-RUN spack install --show-log-on-error caliper && \
-    spack clean --all
-
-FROM laristra/spack-base:ubuntu18_tmp AS spack_misc
-RUN spack install --show-log-on-error hdf5 && \
-    spack install --show-log-on-error metis && \
-    spack install --show-log-on-error parmetis && \
     spack clean --all
 
 COPY entrypoint.sh /home/flecsi/.local/bin/

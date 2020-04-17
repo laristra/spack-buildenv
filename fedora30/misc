@@ -1,0 +1,18 @@
+FROM laristra/spack-base:fedora30_tmp
+
+SHELL ["/bin/bash", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    HOME=/home/flecsi \
+    BASH_ENV=~/.bashrc
+
+USER flecsi
+WORKDIR $HOME
+
+RUN spack install --show-log-on-error hdf5 && \
+    spack install --show-log-on-error metis && \
+    spack install --show-log-on-error parmetis && \
+    spack clean --all
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["/bin/bash"]
