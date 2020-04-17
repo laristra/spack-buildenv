@@ -38,24 +38,27 @@ COPY mirrors.yaml $HOME/spack/etc/spack/
 COPY mirror/ $HOME/mirror
 
 RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
-RUN spack install --show-log-on-error cmake
+RUN spack install --show-log-on-error cmake && \
+    spack clean --all
 
 FROM laristra/spack-base:centos8_tmp AS spack_mpi
 RUN spack install --show-log-on-error mpich && \
-    spack install --show-log-on-error openmpi
+    spack install --show-log-on-error openmpi && \
+    spack clean --all
 
 FROM laristra/spack-base:centos8_tmp AS spack_boost
-RUN spack install --show-log-on-error boost
+RUN spack install --show-log-on-error boost && \
+    spack clean --all
 
 FROM laristra/spack-base:centos8_tmp AS spack_caliper
-RUN spack install --show-log-on-error caliper
+RUN spack install --show-log-on-error caliper && \
+    spack clean --all
 
 FROM laristra/spack-base:centos8_tmp AS spack_misc
 RUN spack install --show-log-on-error hdf5 && \
     spack install --show-log-on-error metis && \
-    spack install --show-log-on-error parmetis
-
-RUN spack clean --all
+    spack install --show-log-on-error parmetis && \
+    spack clean --all
 
 COPY entrypoint.sh /home/flecsi/.local/bin/
 ENTRYPOINT ["entrypoint.sh"]

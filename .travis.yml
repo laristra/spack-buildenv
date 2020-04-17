@@ -42,15 +42,15 @@ jobs:
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
 
 script:
+  - if [[ ${TRAVIS_BRANCH} != master ]]; then TAG="${TAG}_${TRAVIS_BRANCH//[^a-zA-Z0-9]/_}"; fi
   - ls
   - mkdir ${HOME}/docker
   - cp -v ${DISTRO} ${HOME}/docker/Dockerfile
   - cp -v ${DISTRO}.yaml ${HOME}/docker/packages.yaml
-  - cp -v mirrors.yaml ${HOME}/docker/
-  - cp -v -R mirror ${HOME}/docker/
-  - cp -v entrypoint.sh ${HOME}/docker/
-  - if [[ ${TRAVIS_BRANCH} != master ]]; then TAG="${TAG}_${TRAVIS_BRANCH//[^a-zA-Z0-9]/_}"; fi
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = cmake ]]; then
+      cp -v mirrors.yaml ${HOME}/docker/;
+      cp -v -R mirror ${HOME}/docker/;
+      cp -v entrypoint.sh ${HOME}/docker/;
       travis_wait 50 docker build --target spack_cmake -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpi ]]; then
