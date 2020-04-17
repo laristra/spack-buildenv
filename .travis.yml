@@ -13,9 +13,8 @@ branches:
 stages:
   - name: cmake
   - name: mpi
-  - name: boost
-  - name: caliper
-  - name: misc
+  - name: deps
+  - name: env
 
 jobs:
   fast_finish: true
@@ -28,15 +27,11 @@ jobs:
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-    - stage: boost
+    - stage: deps
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-    - stage: caliper
-      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
-    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
-    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-    - stage: misc
+    - stage: env
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
@@ -57,21 +52,18 @@ script:
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpi ]]; then
       travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
-  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = boost ]]; then
+  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = deps ]]; then
       travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
-  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = caliper ]]; then
-      travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
-    fi
-  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = misc ]]; then
-      travis_wait 50 docker build --squash -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/;
+  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = env ]]; then
+      travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG} ${HOME}/docker/;
     fi
 
 after_success:
   - shopt -s extglob && [[ ${TRAVIS_BRANCH} = @(master) ]] && DEPLOY=yes
   - if [[ ${DOCKERHUB} = true && ${DOCKER_USERNAME} && ${DOCKER_PASSWORD} && ${TRAVIS_PULL_REQUEST} == false && ${DEPLOY} ]]; then
       docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-      if [[ ${TRAVIS_BUILD_STAGE_NAME} = misc ]]; then
+      if [[ ${TRAVIS_BUILD_STAGE_NAME} = env ]]; then
         docker push "${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}";
       else
         docker push "${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp";

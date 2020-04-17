@@ -9,9 +9,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 USER flecsi
 WORKDIR $HOME
 
-RUN spack install --show-log-on-error hdf5 && \
-    spack install --show-log-on-error metis && \
-    spack install --show-log-on-error parmetis && \
+RUN spack install --show-log-on-error --only dependencies flecsi%gcc +cinch backend=mpi +hdf5 +caliper ^mpich && \
+    spack install --show-log-on-error --only dependencies flecsi%gcc +cinch backend=mpi +hdf5 +caliper ^openmpi && \
     spack clean --all
 
 ENTRYPOINT ["entrypoint.sh"]

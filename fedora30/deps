@@ -1,4 +1,4 @@
-FROM laristra/spack-base:ubuntu18_tmp
+FROM laristra/spack-base:fedora30_tmp
 
 SHELL ["/bin/bash", "-c"]
 
@@ -10,6 +10,8 @@ USER flecsi
 WORKDIR $HOME
 
 RUN spack install --show-log-on-error boost && \
+    spack install --show-log-on-error hdf5 && \
+    spack install --show-log-on-error caliper && \
     spack clean --all
 
 ENTRYPOINT ["entrypoint.sh"]
