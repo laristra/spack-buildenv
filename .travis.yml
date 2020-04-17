@@ -47,7 +47,7 @@ script:
   - mkdir ${HOME}/docker
   - cp -v ${DISTRO}/${TRAVIS_BUILD_STAGE_NAME} ${HOME}/docker/Dockerfile
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = cmake ]]; then
-      cp -v ${DISTRO}/packages.yaml ${HOME}/docker/
+      cp -v ${DISTRO}/packages.yaml ${HOME}/docker/;
       cd config;
       cp -v mirrors.yaml ${HOME}/docker/;
       cp -v -R mirror ${HOME}/docker/;
