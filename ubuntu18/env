@@ -1,4 +1,4 @@
-FROM laristra/spack-base:ubuntu18_tmp
+FROM laristra/spack-buildenv:ubuntu18_tmp
 
 SHELL ["/bin/bash", "-c"]
 

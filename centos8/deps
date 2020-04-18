@@ -1,4 +1,4 @@
-FROM laristra/spack-base:centos8_tmp
+FROM laristra/spack-buildenv:centos8_tmp
 
 SHELL ["/bin/bash", "-c"]
 

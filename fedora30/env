@@ -1,4 +1,4 @@
-FROM laristra/spack-base:fedora30_tmp
+FROM laristra/spack-buildenv:fedora30_tmp
 
 SHELL ["/bin/bash", "-c"]
 
