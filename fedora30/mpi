@@ -3,10 +3,10 @@ FROM laristra/spack-buildenv:fedora30_tmp
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    HOME=/home/flecsi \
+    HOME=/home/laristra \
     BASH_ENV=~/.bashrc
 
-USER flecsi
+USER laristra
 WORKDIR $HOME
 
 RUN spack install --show-log-on-error mpich && \
