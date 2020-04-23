@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    HOME=/home/flecsi \
+    HOME=/home/laristra \
     BASH_ENV=~/.bashrc
 
 RUN apt-get -q update -y && \
@@ -17,14 +17,14 @@ RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-7 100 && \
 RUN wget -O /usr/bin/doxy-coverage https://raw.githubusercontent.com/alobbs/doxy-coverage/master/doxy-coverage.py && \
     chmod +x /usr/bin/doxy-coverage
 
-RUN groupadd -r flecsi && \
-    useradd -r -m -g flecsi -G sudo flecsi && \
+RUN groupadd -r laristra && \
+    useradd -r -m -g laristra -G sudo laristra && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-USER flecsi
+USER laristra
 WORKDIR $HOME
 
-ENV PATH=/home/flecsi/.local/bin:/usr/lib/ccache:$HOME/spack/bin:${PATH} \
+ENV PATH=$HOME/.local/bin:/usr/lib/ccache:$HOME/spack/bin:${PATH} \
     PYTHONPATH=/usr/local/lib/python2.7/site-packages${PYTHONPATH:+:}${PYTHONPATH}
 
 RUN pip3 install --user codecov coverxygen gcovr Sphinx recommonmark sphinx_rtd_theme breathe && \
@@ -45,6 +45,6 @@ RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
 RUN spack install --show-log-on-error cmake && \
     spack clean --all
 
-COPY entrypoint.sh /home/flecsi/.local/bin/
+COPY entrypoint.sh $HOME/.local/bin/
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["/bin/bash"]
