@@ -3,7 +3,7 @@ FROM centos:8
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    HOME=/home/flecsi \
+    HOME=/home/laristra \
     BASH_ENV=~/.bashrc
 
 RUN yum update -y && \
@@ -14,14 +14,14 @@ RUN wget -O /usr/bin/doxy-coverage https://raw.githubusercontent.com/alobbs/doxy
     chmod +x /usr/bin/doxy-coverage && \
     sed -i '1s/python/&2/' /usr/bin/doxy-coverage
 
-RUN groupadd -r flecsi && \
-    useradd -r -m -g flecsi -G wheel flecsi && \
+RUN groupadd -r laristra && \
+    useradd -r -m -g laristra -G wheel laristra && \
     echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-USER flecsi
+USER laristra
 WORKDIR $HOME
 
-ENV PATH=/home/flecsi/.local/bin:/usr/lib64/ccache:$HOME/spack/bin:${PATH} \
+ENV PATH=$HOME/.local/bin:/usr/lib64/ccache:$HOME/spack/bin:${PATH} \
     PYTHONPATH=/usr/local/lib/python2.7/site-packages${PYTHONPATH:+:}${PYTHONPATH}
 
 RUN pip3 install --user codecov coverxygen gcovr Sphinx recommonmark sphinx_rtd_theme breathe && \
@@ -41,6 +41,6 @@ RUN echo ". $HOME/spack/share/spack/setup-env.sh" >> ~/.bashrc
 RUN spack install --show-log-on-error cmake && \
     spack clean --all
 
-COPY entrypoint.sh /home/flecsi/.local/bin/
+COPY entrypoint.sh $HOME/.local/bin/
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["/bin/bash"]
