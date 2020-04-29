@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     BASH_ENV=~/.bashrc
 
 RUN dnf update -y && \
-    dnf install -y sudo automake make cmake git curl wget tar xz bzip2 ca-certificates environment-modules clang7.0-devel clang-devel gcc-c++ gcc-gfortran patch ccache python nano vim gdb unzip gcovr lcov doxygen pandoc cereal-devel lapack-devel scotch-devel compiler-rt ghostscript-core texlive-epstopdf-bin texlive-latex-bin-bin texlive-collection-fontsrecommended texlive-fancyhdr texlive-booktabs && \
+    dnf install -y sudo automake make cmake git curl wget tar xz bzip2 ca-certificates environment-modules clang7.0-devel clang-devel gcc-c++ gcc-gfortran patch ccache python2 python3 python2-devel python3-devel nano vim gdb unzip gcovr lcov doxygen pandoc cereal-devel lapack-devel scotch-devel compiler-rt ghostscript-core texlive-epstopdf-bin texlive-latex-bin-bin texlive-collection-fontsrecommended texlive-fancyhdr texlive-booktabs && \
     rm -rf /var/cache/dnf && dnf clean all
 
 RUN wget -O /usr/bin/doxy-coverage https://raw.githubusercontent.com/alobbs/doxy-coverage/master/doxy-coverage.py && \
@@ -28,7 +28,7 @@ RUN pip3 install --user codecov coverxygen gcovr Sphinx recommonmark sphinx_rtd_
     gcc --version && clang --version && perl --version && cmake --version
 
 RUN git clone https://github.com/spack/spack.git && \
-    cd spack && git checkout 0ac77b815fab9d2fd81704ea5f1b16bd7f837e0a && \
+    cd spack && git checkout v0.14.2 && \
     spack compiler find && \
     mv ~/.spack/linux/compilers.yaml $HOME/spack/etc/spack/ && \
     cat $HOME/spack/etc/spack/compilers.yaml
