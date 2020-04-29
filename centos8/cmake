@@ -28,7 +28,7 @@ RUN pip3 install --user codecov coverxygen gcovr Sphinx recommonmark sphinx_rtd_
     gcc --version && clang --version && perl --version && cmake --version
 
 RUN git clone https://github.com/spack/spack.git && \
-    cd spack && git checkout 0ac77b815fab9d2fd81704ea5f1b16bd7f837e0a && \
+    cd spack && git checkout v0.14.2 && \
     spack compiler find && \
     mv ~/.spack/linux/compilers.yaml $HOME/spack/etc/spack/ && \
     cat $HOME/spack/etc/spack/compilers.yaml
