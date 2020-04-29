@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     BASH_ENV=~/.bashrc
 
 RUN yum update -y && \
-    yum install -y sudo automake make cmake git curl wget tar xz bzip2 ca-certificates environment-modules clang-devel gcc-c++ gcc-gfortran patch python2 python3 nano vim gdb unzip lapack texlive-epstopdf-bin texlive-latex-bin-bin texlive-collection-fontsrecommended texlive-fancyhdr texlive-booktabs && \
+    yum install -y sudo automake make cmake git curl wget tar xz bzip2 ca-certificates environment-modules clang-devel gcc-c++ gcc-gfortran patch python2 python3 python2-devel python36-devel nano vim gdb unzip lapack texlive-epstopdf-bin texlive-latex-bin-bin texlive-collection-fontsrecommended texlive-fancyhdr texlive-booktabs && \
     rm -rf /var/cache/yum && yum clean all
 
 RUN wget -O /usr/bin/doxy-coverage https://raw.githubusercontent.com/alobbs/doxy-coverage/master/doxy-coverage.py && \
