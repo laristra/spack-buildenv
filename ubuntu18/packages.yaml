@@ -27,4 +27,4 @@ packages:
   openmpi:
     version: [3.1.4]
   ncurses:
-    variant: [~termlib]
+    variants: [~termlib]
