@@ -10,7 +10,7 @@ USER laristra
 WORKDIR $HOME
 
 RUN spack install --show-log-on-error boost && \
-    spack install --show-log-on-error hdf5 && \
+    spack install --show-log-on-error hdf5+hl && \
     spack install --show-log-on-error caliper && \
     spack clean --all
 
