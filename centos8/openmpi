@@ -1,0 +1,16 @@
+FROM laristra/spack-buildenv:centos8_tmp
+
+SHELL ["/bin/bash", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    HOME=/home/laristra \
+    BASH_ENV=~/.bashrc
+
+USER laristra
+WORKDIR $HOME
+
+RUN spack install --show-log-on-error openmpi && \
+    spack clean --all
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["/bin/bash"]

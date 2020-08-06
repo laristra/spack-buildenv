@@ -10,7 +10,6 @@ USER laristra
 WORKDIR $HOME
 
 RUN spack install --show-log-on-error mpich && \
-    spack install --show-log-on-error openmpi && \
     spack clean --all
 
 ENTRYPOINT ["entrypoint.sh"]

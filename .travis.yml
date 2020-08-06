@@ -12,7 +12,8 @@ branches:
 
 stages:
   - name: cmake
-  - name: mpi
+  - name: mpich
+  - name: openmpi
   - name: deps
   - name: env
 
@@ -23,7 +24,11 @@ jobs:
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
-    - stage: mpi
+    - stage: mpich
+      env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
+    - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
+    - stage: openmpi
       env: DISTRO=ubuntu18 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=fedora30 DOCKERHUB=true DEPLOY=yes
     - env: DISTRO=centos8 DOCKERHUB=true DEPLOY=yes
@@ -49,7 +54,10 @@ script:
       cp -v entrypoint.sh ${HOME}/docker/;
       travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
-  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpi ]]; then
+  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = mpich ]]; then
+      travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
+    fi
+  - if [[ ${TRAVIS_BUILD_STAGE_NAME} = openmpi ]]; then
       travis_wait 50 docker build -t ${TRAVIS_REPO_SLUG}:${DISTRO}${TAG}_tmp ${HOME}/docker/;
     fi
   - if [[ ${TRAVIS_BUILD_STAGE_NAME} = deps ]]; then
