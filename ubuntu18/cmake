@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     BASH_ENV=~/.bashrc
 
 RUN apt-get -q update -y && \
-    apt-get -qq install -y sudo automake make cmake git curl wget tar xz-utils bzip2 ca-certificates environment-modules clang-7 libclang-7-dev clang-format-7 g++ gfortran patch ccache python-dev python3-dev python-pip python3-pip nano vim gdb unzip gcovr lcov doxygen pandoc libcereal-dev liblapacke-dev libscotch-dev texlive-font-utils texlive-latex-base texlive-fonts-recommended texlive-latex-recommended && \
+    apt-get -qq install -y sudo automake make cmake git curl wget tar xz-utils bzip2 ca-certificates environment-modules clang-7 libclang-7-dev clang-format-7 g++ gfortran patch ccache python-dev python3-dev python-pip python3-pip nano vim gdb unzip gcovr lcov doxygen pandoc libcereal-dev liblapacke-dev libscotch-dev libtinfo-dev texlive-font-utils texlive-latex-base texlive-fonts-recommended texlive-latex-recommended && \
     rm -rf /var/cache/apt && apt-get clean all
 
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-7 100 && \
