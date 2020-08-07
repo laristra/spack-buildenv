@@ -33,9 +33,11 @@ RUN pip3 install --user codecov coverxygen gcovr Sphinx recommonmark sphinx_rtd_
 
 RUN git clone https://github.com/spack/spack.git && \
     cd spack && git checkout v0.15.3 && \
-    spack compiler find && \
-    mv ~/.spack/linux/compilers.yaml $HOME/spack/etc/spack/ && \
-    cat $HOME/spack/etc/spack/compilers.yaml
+    spack compiler find --scope site && \
+    spack compilers && \
+    git clone https://github.com/laristra/ristra_spackages.git && \
+    spack repo add --scope site ristra_spackages/spack-repo && \
+    spack repo list
 
 COPY packages.yaml $HOME/spack/etc/spack/
 COPY mirrors.yaml $HOME/spack/etc/spack/
