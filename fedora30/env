@@ -9,8 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 USER laristra
 WORKDIR $HOME
 
-RUN spack install --show-log-on-error flecsi-deps%gcc backend=legion +hdf5 ^mpich && \
-    spack install --show-log-on-error flecsi-deps%gcc backend=hpx +hdf5 ^openmpi && \
+RUN spack install --show-log-on-error flecsi-deps%gcc backend=mpi +hdf5 ^mpich && \
     spack clean --all
 
 ENTRYPOINT ["entrypoint.sh"]
